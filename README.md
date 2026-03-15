@@ -11,7 +11,6 @@ Practice codes for Image Processing course.
 | 5 |
 | 6 |
 | 7 |
-| 8 |
 | 9 |
 | 10 |
 | 11 |
@@ -19,4 +18,4 @@ Practice codes for Image Processing course.
 | 13 |
 | 14 |
 | 15 |
-| 16 |
+
