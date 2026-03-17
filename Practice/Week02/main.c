@@ -47,7 +47,6 @@ int main(int argc, char* argv[])
 	}
 
 	// 3. 작업이 끝난 tempImg를 다시 inputImg로 덮어쓰기 (교체)
-	// 이렇게 하면 아래의 "Original Copy" 루프가 inputImg를 읽을 때 수정된 값이 들어갑니다.
 	memcpy(inputImg, tempImg, size);
 	free(tempImg);
 	
