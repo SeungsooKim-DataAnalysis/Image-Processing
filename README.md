@@ -4,9 +4,9 @@ Practice codes for Image Processing course.
 
 | Week | Practice | Topic |
 |-----|-----|-----|
-| 1 | [C-File IO](Week01/main.c) | Image Input / Output |
-| 2 | Histogram | Histogram Calculation |
-| 3 | Edge Detection | Sobel / Canny |
+| 1 | [C-File IO](Week01) | Image Input / Output |
+| 2 | [Image Format](Week02) | Region-Based-Thresholding  |
+| 3 | [Color Model](Week03) | Color Space Conversion(RGB → YCbCr → RGB) |
 | 4 | Filtering | Gaussian Filter |
 | 5 |
 | 6 |
