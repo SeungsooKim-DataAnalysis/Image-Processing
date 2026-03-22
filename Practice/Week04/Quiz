@@ -1,0 +1,300 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <windows.h>
+//파일 입출력
+/*int main() { 
+    double height, weight;
+    int age, i;
+    FILE* fp1,
+        * fp2;
+    fp1 = fopen("input.dat", "r");
+    fp2 = fopen("output.dat", "w");
+    //fp1 = fopen("C:\\Users\\82103\\OneDrive\\바탕 화면\\input.dat", "r");
+    //fp2 = fopen("C:\\Users\\82103\\OneDrive\\바탕 화면\\output.dat", "w");
+
+    if (fp1 == NULL) {
+        printf("input.dat 열기 실패\n");
+        return 1;
+    }
+
+    if (fp2 == NULL) {
+        printf("output.dat 열기 실패\n");
+        return 1;
+    }
+
+    for (i = 0; i < 3; i++) {
+        fscanf(fp1, "%lf %lf %d", &height, &weight, &age); // 입력 받기
+        fprintf(fp2, "%.2f %.2f %d\n", height, weight, age); //출력하기
+    }
+    fclose(fp1); // input.dat 파일닫기
+    fclose(fp2); // output.dat 파일닫기
+    return 0;
+}*/
+
+//검은색 흰색
+/*int main()
+{
+	BITMAPFILEHEADER bmpFile;
+	BITMAPINFOHEADER bmpInfo;
+	FILE* inputFile = NULL;
+	inputFile = fopen("AICenter.bmp", "rb");
+	fread(&bmpFile, sizeof(BITMAPFILEHEADER), 1, inputFile);
+	fread(&bmpInfo, sizeof(BITMAPINFOHEADER), 1, inputFile);
+
+	int width = bmpInfo.biWidth;
+	int height = bmpInfo.biHeight;
+	int size = bmpInfo.biSizeImage;
+	int bitCnt = bmpInfo.biBitCount;
+	int stride = (((bitCnt / 8) * width) + 3) / 4 * 4;
+	printf("w: %d(%d)\nH: %d\nS: %d\nD: %d\n\n", width, stride, height, size, bitCnt);
+
+	unsigned char* inputImg = NULL, * outputImg = NULL;
+	inputImg = (unsigned char*)calloc(size, sizeof(unsigned char));
+	outputImg = (unsigned char*)calloc(size, sizeof(unsigned char));
+	fread(inputImg, sizeof(unsigned char), size, inputFile);
+
+	unsigned char* tempImg = (unsigned char*)calloc(size, sizeof(unsigned char));
+	for (int j = 0; j < height; j++) {
+		for (int i = 0; i < width; i++) {
+			// tempImg에 조건에 따른 값을 담습니다.
+			if (j < 100 && i < 100) {
+				tempImg[j * stride + 3 * i + 0] = 0;
+				tempImg[j * stride + 3 * i + 1] = 0;
+				tempImg[j * stride + 3 * i + 2] = 0;
+			}
+			else if (j > 400 && i > 400) {
+				tempImg[j * stride + 3 * i + 0] = 255;
+				tempImg[j * stride + 3 * i + 1] = 255;
+				tempImg[j * stride + 3 * i + 2] = 255;
+			}
+			else {
+				// 조건 외 영역은 원본 복사
+				tempImg[j * stride + 3 * i + 0] = inputImg[j * stride + 3 * i + 0];
+				tempImg[j * stride + 3 * i + 1] = inputImg[j * stride + 3 * i + 1];
+				tempImg[j * stride + 3 * i + 2] = inputImg[j * stride + 3 * i + 2];
+			}
+		}
+	}
+
+	// 3. 작업이 끝난 tempImg를 다시 inputImg로 덮어쓰기 (교체)
+	memcpy(inputImg, tempImg, size);
+	free(tempImg);
+	
+
+	//Original Copy
+	for (int j = 0; j < height; j++) {
+		for(int i = 0; i < width; i++) {
+			outputImg[j * stride + 3 * i + 0] = inputImg[j * stride + 3 * i + 0];
+			outputImg[j * stride + 3 * i + 1] = inputImg[j * stride + 3 * i + 1];
+			outputImg[j * stride + 3 * i + 2] = inputImg[j * stride + 3 * i + 2];
+		}
+	}
+
+	FILE* outputFile = fopen("Output.bmp", "wb");
+	fwrite(&bmpFile, sizeof(BITMAPFILEHEADER), 1, outputFile);
+	fwrite(&bmpInfo, sizeof(BITMAPINFOHEADER), 1, outputFile);
+	fwrite(outputImg, sizeof(unsigned char), size, outputFile);
+
+	free(outputImg);
+	free(inputImg);
+	fclose(inputFile);
+	fclose(outputFile);
+}*/
+
+//Color model
+/*int main()
+{
+    BITMAPFILEHEADER bmpFile;
+    BITMAPINFOHEADER bmpInfo;
+    FILE* inputFile = NULL;
+    inputFile = fopen("AICenter.bmp", "rb");
+    fread(&bmpFile, sizeof(BITMAPFILEHEADER), 1, inputFile);
+    fread(&bmpInfo, sizeof(BITMAPINFOHEADER), 1, inputFile);
+
+    int width = bmpInfo.biWidth;
+    int height = bmpInfo.biHeight;
+    int size = bmpInfo.biSizeImage;
+    int bitCnt = bmpInfo.biBitCount;
+    int stride = (((bitCnt / 8) * width) + 3) / 4 * 4;
+    printf("w: %d(%d)\nH: %d\nS: %d\nD: %d\n\n", width, stride, height, size, bitCnt);
+
+    unsigned char* inputImg = NULL, * outputImg = NULL;
+    inputImg = (unsigned char*)calloc(size, sizeof(unsigned char));
+    outputImg = (unsigned char*)calloc(size, sizeof(unsigned char));
+    fread(inputImg, sizeof(unsigned char), size, inputFile);
+
+    //2차 동적할당
+    double** tmpY = (double**)malloc(height * sizeof(double*));
+    double** tmpCb = (double**)malloc(height * sizeof(double*));
+    double** tmpCr = (double**)malloc(height * sizeof(double*));
+    for (int i = 0; i < height; i++) {
+        tmpY[i] = (double*)malloc(width * sizeof(double));
+        tmpCb[i] = (double*)malloc(width * sizeof(double));
+        tmpCr[i] = (double*)malloc(width * sizeof(double));
+    }
+
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            tmpY[i][j] =
+                0.299 * inputImg[i * stride + 3 * j + 2] +
+                0.587 * inputImg[i * stride + 3 * j + 1] +
+                0.114 * inputImg[i * stride + 3 * j + 0];
+            tmpCb[i][j] =
+                -0.169 * inputImg[i * stride + 3 * j + 2] -
+                0.331 * inputImg[i * stride + 3 * j + 1] +
+                0.500 * inputImg[i * stride + 3 * j + 0];
+            tmpCr[i][j] =
+                0.500 * inputImg[i * stride + 3 * j + 2] -
+                0.419 * inputImg[i * stride + 3 * j + 1] -
+                0.0813 * inputImg[i * stride + 3 * j + 0];
+        }
+    }
+
+    for (int i = 0; i < height; i++) {//형변환
+        for (int j = 0; j < width; j++) {
+            inputImg[i * stride + 3 * j + 0] = (unsigned char)(tmpY[i][j] > 255 ? 255 : (tmpY[i][j] < 0 ? 0 : tmpY[i][j]));;
+            inputImg[i * stride + 3 * j + 1] = (unsigned char)(tmpY[i][j] > 255 ? 255 : (tmpY[i][j] < 0 ? 0 : tmpY[i][j]));;
+            inputImg[i * stride + 3 * j + 2] = (unsigned char)(tmpY[i][j] > 255 ? 255 : (tmpY[i][j] < 0 ? 0 : tmpY[i][j]));;
+        }
+    }
+
+    //역변환 변수 동적할당
+    double** R = (double**)malloc(sizeof(double*) * height);
+    double** G = (double**)malloc(sizeof(double*) * height);
+    double** B = (double**)malloc(sizeof(double*) * height);
+
+    for (int i = 0; i < height; i++) {
+        R[i] = (double*)malloc(sizeof(double) * width);
+        G[i] = (double*)malloc(sizeof(double) * width);
+        B[i] = (double*)malloc(sizeof(double) * width);
+    }
+
+    for (int i = 0; i < height; i++) {//역변환
+        for (int j = 0; j < width; j++) {
+            R[i][j] = tmpY[i][j] + 1.402 * tmpCr[i][j];
+            G[i][j] = tmpY[i][j] - 0.714 * tmpCr[i][j] - 0.344 * tmpCb[i][j];
+            B[i][j] = tmpY[i][j] + 1.772 * tmpCb[i][j];
+        }
+    }
+    for (int i = 0; i < height; i++) {//형변환
+        for (int j = 0; j < width; j++) {
+            inputImg[i * stride + 3 * j + 0] = (unsigned char)(B[i][j] > 255 ? 255 : (B[i][j] < 0 ? 0 : B[i][j]));;
+            inputImg[i * stride + 3 * j + 1] = (unsigned char)(G[i][j] > 255 ? 255 : (G[i][j] < 0 ? 0 : G[i][j]));;
+            inputImg[i * stride + 3 * j + 2] = (unsigned char)(R[i][j] > 255 ? 255 : (R[i][j] < 0 ? 0 : R[i][j]));;
+        }
+    }    
+
+    //output <- input
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            outputImg[i * stride + 3 * j + 0] = inputImg[i * stride + 3 * j + 0];
+            outputImg[i * stride + 3 * j + 1] = inputImg[i * stride + 3 * j + 1];
+            outputImg[i * stride + 3 * j + 2] = inputImg[i * stride + 3 * j + 2];
+        }
+    }
+
+    FILE* outputFile = fopen("Output.bmp", "wb");
+    fwrite(&bmpFile, sizeof(BITMAPFILEHEADER), 1, outputFile);
+    fwrite(&bmpInfo, sizeof(BITMAPINFOHEADER), 1, outputFile);
+    fwrite(outputImg, sizeof(unsigned char), size, outputFile);
+
+
+    for (int i = 0; i < height; i++) {
+        free(tmpY[i]);
+    }
+    free(tmpY);
+
+    free(inputImg);
+    free(outputImg);
+    fclose(inputFile);
+    fclose(outputFile);
+
+    return 0;
+}*/
+int main()
+{
+    BITMAPFILEHEADER bmpFile1, bmpFile2;
+    BITMAPINFOHEADER bmpInfo1, bmpInfo2;
+    FILE* inputFile1 = NULL, * inputFile2 = NULL;
+    inputFile1 = fopen("AICenterY.bmp", "rb");
+    fread(&bmpFile1, sizeof(BITMAPFILEHEADER), 1, inputFile1);
+    fread(&bmpInfo1, sizeof(BITMAPINFOHEADER), 1, inputFile1);
+    inputFile2 = fopen("AICenterY_Noise.bmp", "rb");
+    fread(&bmpFile2, sizeof(BITMAPFILEHEADER), 1, inputFile2);
+    fread(&bmpInfo2, sizeof(BITMAPINFOHEADER), 1, inputFile2);    
+
+    int size = bmpInfo1.biSizeImage;
+    int width = bmpInfo1.biWidth;
+    int height = bmpInfo1.biHeight;
+    int bitCnt = bmpInfo1.biBitCount;
+    int stride = (((bitCnt / 8) * width) + 3) / 4 * 4;
+    //printf("w: %d(%d)\nH: %d\nS: %d\nD: %d\n\n", width, stride, height, size, bitCnt);
+
+    unsigned char* inputImg1 = NULL, * inputImg2 = NULL;
+    inputImg1 = (unsigned char*)calloc(size, sizeof(unsigned char));
+    inputImg2 = (unsigned char*)calloc(size, sizeof(unsigned char));    
+    fread(inputImg1, sizeof(unsigned char), size, inputFile1);
+    fread(inputImg2, sizeof(unsigned char), size, inputFile2);
+    
+    /*1차열 배열
+    double* Y1 = (double*)malloc(sizeof(double) * width * height);
+    double* Y2 = (double*)malloc(sizeof(double) * width * height);
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            Y1[i * width + j] = inputImg1[i * stride + 3 * j + 0];
+            Y2[i * width + j] = inputImg2[i * stride + 3 * j + 0];
+        }
+    }
+    double mse = 0, psnr;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            mse += (Y2[i * width + j] - Y1[i * width + j]) * (Y2[i * width + j] - Y1[i * width + j]);
+        }
+    }*/
+
+    //2차원 배열
+    double** Y = (double**)malloc(sizeof(double*) * height);
+    double** Y1 = (double**)malloc(sizeof(double*) * height);
+    double** Y2 = (double**)malloc(sizeof(double*) * height);
+    for (int i = 0; i < height; i++) {
+        Y[i] = (double*)malloc(sizeof(double) * width);
+        Y1[i] = (double*)malloc(sizeof(double) * width);
+        Y2[i] = (double*)malloc(sizeof(double) * width);        
+    }
+
+    //InputImg1 = Color, InputImg2 = Luminance
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            Y[i][j] = 0.299 * inputImg1[i * stride + 3 * j + 2] + 0.587 * inputImg1[i * stride + 3 * j + 1] + 0.114 * inputImg1[i * stride + 3 * j + 0];
+            Y1[i][j] = (unsigned char)(Y[i][j] > 255 ? 255 : (Y[i][j] < 0 ? 0 : Y[i][j]));
+            Y2[i][j] = inputImg2[i * stride + 3 * j + 0];
+        }
+    }
+
+    //InputImg1 = Luminance, InputImg2 = Luminance
+   for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            Y1[i][j] = inputImg2[i * stride + 3 * j + 0];
+            Y2[i][j] = inputImg1[i * stride + 3 * j + 0];
+        }
+    }
+    
+    double mse = 0, psnr;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            mse += (double)(Y2[i][j] - Y1[i][j]) * (Y2[i][j] - Y1[i][j]);
+        }
+    }
+    mse /= (width * height);
+    psnr = mse != 0.0 ? 10.0 * log10(255 * 255 / mse) : 99.99;
+    printf("MSE = %.2lf\nPSNR = %.2lf dB\n", mse, psnr);
+    
+    free(inputImg1);
+    free(inputImg2);
+    fclose(inputFile1);
+    fclose(inputFile2);  
+
+    return 0;
+}
