@@ -13,6 +13,8 @@
     fp2 = fopen("output.dat", "w");
     //fp1 = fopen("C:\\Users\\82103\\OneDrive\\바탕 화면\\input.dat", "r");
     //fp2 = fopen("C:\\Users\\82103\\OneDrive\\바탕 화면\\output.dat", "w");
+    //fp1 = fopen("..\\DATA\\input.dat", "r"); 
+	//fp2 = fopen("..\\DATA\\output.dat", "w");
 
     if (fp1 == NULL) {
         printf("input.dat 열기 실패\n");
