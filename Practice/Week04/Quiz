@@ -9,8 +9,8 @@
     int age, i;
     FILE* fp1,
         * fp2;
-    fp1 = fopen("input.dat", "r");
-    fp2 = fopen("output.dat", "w");
+    fp1 = fopen("input.dat", "r"); //이진 읽기모드: rb
+    fp2 = fopen("output.dat", "w"); //이진 쓰기모드: wb
     //fp1 = fopen("C:\\Users\\82103\\OneDrive\\바탕 화면\\input.dat", "r");
     //fp2 = fopen("C:\\Users\\82103\\OneDrive\\바탕 화면\\output.dat", "w");
     //fp1 = fopen("..\\DATA\\input.dat", "r"); 
