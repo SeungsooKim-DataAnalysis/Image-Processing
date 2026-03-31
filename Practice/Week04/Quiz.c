@@ -49,28 +49,26 @@ int main()
 
     // 값 저장 + 밝기 증가
     for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {           
-
+        for (int j = 0; j < width; j++) {
             Y1[i][j] = inputImg2[i * stride + 3 * j]; // test
             Y2[i][j] = inputImg1[i * stride + 3 * j]; // org
-
-            double val = inputImg1[i * stride + 3 * j] + 40;
-            if (val > 255) val = 255;
-            SID[i][j] = val;
-
-            // output 이미지 생성
-            outputImg[i * stride + 3 * j + 0] = (unsigned char)val;
-            outputImg[i * stride + 3 * j + 1] = (unsigned char)val;
-            outputImg[i * stride + 3 * j + 2] = (unsigned char)val;
+            SID[i][j] = Y1[i][j] + 40;
+            if (SID[i][j] > 255) SID[i][j] = 255;
         }
     }
 
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            outputImg[i * stride + 3 * j + 0] = SID[i][j];
+            outputImg[i * stride + 3 * j + 1] = SID[i][j];
+            outputImg[i * stride + 3 * j + 2] = SID[i][j];
+        }
+    }
     double mse1 = 0, mse2 = 0;
     double psnr1, psnr2;
 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-
             mse1 += (Y2[i][j] - Y1[i][j]) * (Y2[i][j] - Y1[i][j]); // org vs test
             mse2 += (Y2[i][j] - SID[i][j]) * (Y2[i][j] - SID[i][j]); // org vs +40
         }
